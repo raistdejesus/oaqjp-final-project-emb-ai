@@ -1,4 +1,3 @@
-from flask import Flask, request, json
 import requests
 
 API_URL = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'
@@ -9,6 +8,9 @@ def emotion_detector(text_to_analyze):
     resp = requests.post(API_URL,
         headers=HEADER,
         json=input_data)
+    
+    if resp.status_code == 400:
+        return {"anger":"None","disgust":"None","fear":"None","joy":"None","sadness":"None","dominant_emotion":"None"}
 
     data = resp.json()
     emotion_data = data["emotionPredictions"][0]["emotion"]
@@ -27,7 +29,6 @@ def emotion_detector(text_to_analyze):
             emotion = x
 
     emotion_data["dominant_emotion"] = emotion
-   
-    print(emotion_data)
+    return emotion_data
 
    
